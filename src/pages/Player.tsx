@@ -21,9 +21,9 @@ export function Player() {
             <Video />
           </div>
           <aside className="absolute top-0 bottom-0 right-0 w-80 border-l border-zinc-800 bg-zinc-900 overflow-y-scroll scrollbar scrollbar-track-zinc-950 scrollbar-thumb-zinc-800 divide-y-2 divide-zinc-900">
-            <Module />
-            <Module />
-            <Module />
+            <Module title="redux" amountOfLessons={12} moduleIndex={0} />
+            <Module title="redux" amountOfLessons={12} moduleIndex={1} />
+            <Module title="redux" amountOfLessons={12} moduleIndex={2} />
           </aside>
         </main>
       </div>
