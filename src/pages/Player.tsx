@@ -3,18 +3,30 @@ import { Video } from "../components/Video"
 import { Module } from "../components/Module"
 import { MessageCircle } from "lucide-react"
 import { UseAppSelector } from "../store"
-import { useCurrentLesson } from "../store/slices/player"
+import { start, useCurrentLesson } from "../store/slices/player"
 import { useEffect } from "react"
+import { api } from "../lib/axios"
+import { useDispatch } from "react-redux"
 
 export function Player() {
+  const dispatch = useDispatch()
+
   const modules = UseAppSelector((state) => {
-    return state.player.course.modules
+    return state.player.course?.modules
   })
 
   const { currentLesson } = useCurrentLesson()
 
   useEffect(() => {
-    document.title = `Assistindo: ${currentLesson.title}`
+    api.get("/courses/1").then((response) => {
+      dispatch(start(response.data))
+    })
+  }, [])
+
+  useEffect(() => {
+    if (currentLesson) {
+      document.title = `Assistindo: ${currentLesson.title}`
+    }
   }, [currentLesson])
 
   return (
@@ -34,16 +46,17 @@ export function Player() {
             <Video />
           </div>
           <aside className="absolute top-0 bottom-0 right-0 w-80 border-l border-zinc-800 bg-zinc-900 overflow-y-scroll scrollbar scrollbar-track-zinc-950 scrollbar-thumb-zinc-800 divide-y-2 divide-zinc-900">
-            {modules.map((module, index) => {
-              return (
-                <Module
-                  key={module.id}
-                  title={module.title}
-                  amountOfLessons={module.lessons.length}
-                  moduleIndex={index}
-                />
-              )
-            })}
+            {modules &&
+              modules.map((module, index) => {
+                return (
+                  <Module
+                    key={module.id}
+                    title={module.title}
+                    amountOfLessons={module.lessons.length}
+                    moduleIndex={index}
+                  />
+                )
+              })}
           </aside>
         </main>
       </div>
