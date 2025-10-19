@@ -6,7 +6,7 @@ import { useEffect } from "react"
 import { useCurrentLesson, useStore } from "../zustand-store"
 
 export function Player() {
-  const { course, load } = useStore()
+  const { course, load, isLoading } = useStore()
   const { currentLesson } = useCurrentLesson()
 
   useEffect(() => {
@@ -18,6 +18,42 @@ export function Player() {
       document.title = `Assistindo: ${currentLesson.title}`
     }
   }, [currentLesson])
+
+  function ModuleSkeleton() {
+    return (
+      <div className="group animate-pulse">
+        <div className="flex w-full items-center gap-3 bg-zinc-800 p-4">
+          <div className="w-10 h-10 rounded-full bg-zinc-950" />
+          <div className="flex flex-col gap-1 text-left flex-1">
+            <div className="h-4 bg-zinc-700 rounded w-3/4"></div>{" "}
+            <div className="h-3 bg-zinc-700 rounded w-1/4"></div>{" "}
+          </div>
+        </div>
+
+        {/* Esqueleto do Conteúdo (Aulas) */}
+        <div className="relative flex flex-col gap-4 p-6">
+          {/* Aula fantasma 1 */}
+          <div className="flex items-center gap-3">
+            <div className="w-4 h-4 rounded-full bg-zinc-700" />
+            <div className="flex-1 h-4 bg-zinc-700 rounded" />
+            <div className="w-10 h-4 bg-zinc-700 rounded" />   {" "}
+          </div>
+          {/* Aula fantasma 2 */}
+          <div className="flex items-center gap-3">
+            <div className="w-4 h-4 rounded-full bg-zinc-700" />
+            <div className="flex-1 h-4 bg-zinc-700 rounded" />
+            <div className="w-10 h-4 bg-zinc-700 rounded" />   {" "}
+          </div>
+          {/* Aula fantasma 3 */}
+          <div className="flex items-center gap-3">
+            <div className="w-4 h-4 rounded-full bg-zinc-700" />
+            <div className="flex-1 h-4 bg-zinc-700 rounded" />
+            <div className="w-10 h-4 bg-zinc-700 rounded" />   {" "}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="h-screen bg-zinc-950 text-zinc-50 flex justify-center items-center">
@@ -34,7 +70,14 @@ export function Player() {
             <Video />
           </div>
           <aside className="absolute top-0 bottom-0 right-0 w-80 border-l border-zinc-800 bg-zinc-900 overflow-y-scroll scrollbar scrollbar-track-zinc-950 scrollbar-thumb-zinc-800 divide-y-2 divide-zinc-900">
-            {course?.modules &&
+            {isLoading ? (
+              <>
+                <ModuleSkeleton />
+                <ModuleSkeleton />
+                <ModuleSkeleton />
+              </>
+            ) : (
+              course?.modules &&
               course?.modules.map((module, index) => {
                 return (
                   <Module
@@ -44,7 +87,8 @@ export function Player() {
                     moduleIndex={index}
                   />
                 )
-              })}
+              })
+            )}
           </aside>
         </main>
       </div>
