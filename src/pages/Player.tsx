@@ -2,21 +2,15 @@ import { Header } from "../components/Header"
 import { Video } from "../components/Video"
 import { Module } from "../components/Module"
 import { MessageCircle } from "lucide-react"
-import { useAppDispatch, UseAppSelector } from "../store"
-import { loadCourse, useCurrentLesson } from "../store/slices/player"
 import { useEffect } from "react"
+import { useCurrentLesson, useStore } from "../zustand-store"
 
 export function Player() {
-  const dispatch = useAppDispatch()
-
-  const modules = UseAppSelector((state) => {
-    return state.player.course?.modules
-  })
-
+  const { course, load } = useStore()
   const { currentLesson } = useCurrentLesson()
 
   useEffect(() => {
-    dispatch(loadCourse())
+    load()
   }, [])
 
   useEffect(() => {
@@ -30,20 +24,18 @@ export function Player() {
       <div className="flex w-[1100px] flex-col gap-6">
         <div className="flex items-center justify-between">
           <Header />
-
           <button className="flex items-center gap-2 rounded bg-violet-500 px-3 py-2 text-sm font-medium text-white hover:bg-violet-600">
             <MessageCircle className="h-4 w-4" />
             Deixar Feedback
           </button>
         </div>
-        {/* Video Player */}
         <main className="relative flex overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 shadow pr-80">
           <div className="flex-1">
             <Video />
           </div>
           <aside className="absolute top-0 bottom-0 right-0 w-80 border-l border-zinc-800 bg-zinc-900 overflow-y-scroll scrollbar scrollbar-track-zinc-950 scrollbar-thumb-zinc-800 divide-y-2 divide-zinc-900">
-            {modules &&
-              modules.map((module, index) => {
+            {course?.modules &&
+              course?.modules.map((module, index) => {
                 return (
                   <Module
                     key={module.id}
